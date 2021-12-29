@@ -12,15 +12,59 @@ class CartItem extends React.Component{
             qty: 1,
             img: ''
         }
+
+        //Binding in Constructor to the increaseQuantity
+        // this.increaseQuantity = this.increaseQuantity.bind(this);
+    }
+
+    //Binding using arrow function
+    increaseQuantity = () => {
+        // this.state.qty += 1;
+
+        //setState 1st Method - It triggers the re-rendering of our component - Shallow Merging
+        // this.setState({
+        //     qty: this.state.qty+1,
+        // });
+
+        // setState 2nd Method - if previous state required use this
+        this.setState((prevState) => {
+            return {
+                qty: prevState.qty+1,
+            }
+        });
+
+        // console.log('this',this);
+
+        // this.setState({qty: this.state.qty + 2}, () => {
+        //     console.log(this.state.qty);
+        // });
+
+        // this.setState({qty: this.state.qty + 3}, () => {
+        //     console.log(this.state.qty);
+        // })
+    }
+
+    decreaseQuantity = () => {
+        const { qty } = this.state;
+
+        //If Quantity is 0, then return
+        if(qty === 0){
+            return;
+        }
+
+        this.setState({
+            qty : this.state.qty - 1,
+        });
     }
 
     render(){
+        
         const { price, title, qty } = this.state; //Object de-structuring
         return (
             <div className='cart-item'>
                 <div className="left-block">
                     {/* Here we are using styles.image , which is adding inline style to the img element */}
-                    <img style={styles.image} /> 
+                    <img style={styles.image} alt={this.state.title} /> 
                 </div>
                 <div className="right-block">
                     {/* Directly using Inline CSS */}
@@ -29,9 +73,24 @@ class CartItem extends React.Component{
                     <div style={ {color: '#777'} }>Qty: {qty}</div>
                     <div className="cart-item-actions">
                         {/* Buttons */}
-                        <img alt='increase' className='action-icons' src='https://cdn-icons.flaticon.com/png/512/3303/premium/3303893.png?token=exp=1640310590~hmac=9b0b0ac9a89ed9693637d6c1f645f77a' />
-                        <img alt='decrease' className='action-icons' src='https://cdn-icons-png.flaticon.com/512/992/992683.png' />
-                        <img alt='delete' className='action-icons' src='https://cdn-icons.flaticon.com/png/512/2907/premium/2907762.png?token=exp=1640310617~hmac=e94c27e690b1015c4b1a9aaa2a214779' />
+                        <img 
+                            alt='increase' 
+                            className='action-icons' 
+                            // Binding this in Render
+                            // onClick={this.increaseQuantity.bind(this)}
+                            onClick = {this.increaseQuantity}
+                            src='https://cdn-icons-png.flaticon.com/512/1828/1828926.png' />
+
+                        <img 
+                            alt='decrease' 
+                            className='action-icons'
+                            onClick= {this.decreaseQuantity}
+                            src='https://cdn-icons-png.flaticon.com/512/992/992683.png' />
+
+                        <img 
+                            alt='delete' 
+                            className='action-icons' 
+                            src='https://cdn-icons-png.flaticon.com/512/1214/1214428.png' />
                     </div>
                 </div>
             </div>
