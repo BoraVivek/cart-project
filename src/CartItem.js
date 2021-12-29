@@ -2,47 +2,6 @@ import React from 'react';
 
 // Class Based Component
 class CartItem extends React.Component{
-
-    //Binding using arrow function
-    increaseQuantity = () => {
-        // this.state.qty += 1;
-
-        //setState 1st Method - It triggers the re-rendering of our component - Shallow Merging
-        // this.setState({
-        //     qty: this.state.qty+1,
-        // });
-
-        // setState 2nd Method - if previous state required use this
-        this.setState((prevState) => {
-            return {
-                qty: prevState.qty+1,
-            }
-        });
-
-        // console.log('this',this);
-
-        // this.setState({qty: this.state.qty + 2}, () => {
-        //     console.log(this.state.qty);
-        // });
-
-        // this.setState({qty: this.state.qty + 3}, () => {
-        //     console.log(this.state.qty);
-        // })
-    }
-
-    decreaseQuantity = () => {
-        const { qty } = this.state;
-
-        //If Quantity is 0, then return
-        if(qty === 0){
-            return;
-        }
-
-        this.setState({
-            qty : this.state.qty - 1,
-        });
-    }
-
     render(){
         console.log('this.props.product', this.props.product);
         //Getting the product details from the props
@@ -63,15 +22,18 @@ class CartItem extends React.Component{
                         <img 
                             alt='increase' 
                             className='action-icons' 
-                            // Binding this in Render
-                            // onClick={this.increaseQuantity.bind(this)}
-                            onClick = {this.increaseQuantity}
+                            //Here we get handleIncreaseQuantity inside the onIncreaseQuantity prop from Cart Component, 
+                            /**
+                             * So we also have to pass the product to that function, therefore we can't directly pass the argument to the function
+                             * as it will call the function, therefore we have to, use arrow function syntax, to avoid calling of function
+                             */
+                            onClick = {() => this.props.onIncreaseQuantity(this.props.product)}
                             src='https://cdn-icons-png.flaticon.com/512/1828/1828926.png' />
 
                         <img 
                             alt='decrease' 
                             className='action-icons'
-                            onClick= {this.decreaseQuantity}
+                            onClick= {() => this.props.onDecreaseQuantity(this.props.product)}
                             src='https://cdn-icons-png.flaticon.com/512/992/992683.png' />
 
                         <img 

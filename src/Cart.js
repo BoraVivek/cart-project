@@ -35,6 +35,41 @@ class Cart extends React.Component {
         }
     }
 
+
+    //Function to increase the quantity of product
+    handleIncreaseQuantity = (product) => {
+        //Here we are fetching all products from the state
+        const { products } = this.state;
+
+        //Now we are finding the index of the product where we have to increase the quantity
+        const index = products.indexOf(product);
+
+        // Now we increase the quantity of product at that particular index
+        products[index].qty += 1;
+
+        //Now we replace the products array with the updated products
+        this.setState({
+            products: products
+        })
+    }
+
+    //Function to decrease the quantity of product
+    handleDecreaseQuantity = (product) => {
+         //Here we are fetching all products from the state
+         const { products } = this.state;
+
+         //Now we are finding the index of the product where we have to decrease the quantity
+         const index = products.indexOf(product);
+ 
+         // Now we decrease the quantity of product at that particular index
+         products[index].qty -= 1;
+ 
+         //Now we replace the products array with the updated products
+         this.setState({
+             products: products
+         })
+    }
+
     render() {
         //Desctructuring Products from State
         const { products } = this.state;
@@ -45,7 +80,10 @@ class Cart extends React.Component {
                     return (
                         <CartItem 
                             product={product}  
-                            key={product.id} />
+                            key={product.id}
+                            // Here we are sending the functions as props to the Child Component
+                            onIncreaseQuantity = {this.handleIncreaseQuantity}
+                            onDecreaseQuantity = {this.handleDecreaseQuantity} />
                     );
                 })}
             </div>
