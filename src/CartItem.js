@@ -3,20 +3,6 @@ import React from 'react';
 // Class Based Component
 class CartItem extends React.Component{
 
-    //Creating State
-    constructor(){
-        super();
-        this.state = {
-            price: 999,
-            title: 'Phone',
-            qty: 1,
-            img: ''
-        }
-
-        //Binding in Constructor to the increaseQuantity
-        // this.increaseQuantity = this.increaseQuantity.bind(this);
-    }
-
     //Binding using arrow function
     increaseQuantity = () => {
         // this.state.qty += 1;
@@ -58,13 +44,14 @@ class CartItem extends React.Component{
     }
 
     render(){
-        
-        const { price, title, qty } = this.state; //Object de-structuring
+        console.log('this.props.product', this.props.product);
+        //Getting the product details from the props
+        const { price, title, qty } = this.props.product; //Object de-structuring
         return (
             <div className='cart-item'>
                 <div className="left-block">
                     {/* Here we are using styles.image , which is adding inline style to the img element */}
-                    <img style={styles.image} alt={this.state.title} /> 
+                    <img style={styles.image} alt={title} /> 
                 </div>
                 <div className="right-block">
                     {/* Directly using Inline CSS */}
