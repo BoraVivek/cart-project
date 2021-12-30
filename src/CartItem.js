@@ -6,6 +6,7 @@ class CartItem extends React.Component{
         console.log('this.props.product', this.props.product);
         //Getting the product details from the props
         const { price, title, qty } = this.props.product; //Object de-structuring
+        const { product, onIncreaseQuantity, onDecreaseQuantity, onDeleteProduct } = this.props;
         return (
             <div className='cart-item'>
                 <div className="left-block">
@@ -27,18 +28,19 @@ class CartItem extends React.Component{
                              * So we also have to pass the product to that function, therefore we can't directly pass the argument to the function
                              * as it will call the function, therefore we have to, use arrow function syntax, to avoid calling of function
                              */
-                            onClick = {() => this.props.onIncreaseQuantity(this.props.product)}
+                            onClick = {() => onIncreaseQuantity(product)}
                             src='https://cdn-icons-png.flaticon.com/512/1828/1828926.png' />
 
                         <img 
                             alt='decrease' 
                             className='action-icons'
-                            onClick= {() => this.props.onDecreaseQuantity(this.props.product)}
+                            onClick= {() => onDecreaseQuantity(product)}
                             src='https://cdn-icons-png.flaticon.com/512/992/992683.png' />
 
                         <img 
                             alt='delete' 
                             className='action-icons' 
+                            onClick = {() => onDeleteProduct(product.id)}
                             src='https://cdn-icons-png.flaticon.com/512/1214/1214428.png' />
                     </div>
                 </div>

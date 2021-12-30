@@ -60,6 +60,10 @@ class Cart extends React.Component {
 
          //Now we are finding the index of the product where we have to decrease the quantity
          const index = products.indexOf(product);
+
+         if(products[index].qty === 0){
+             return;
+         }
  
          // Now we decrease the quantity of product at that particular index
          products[index].qty -= 1;
@@ -68,6 +72,21 @@ class Cart extends React.Component {
          this.setState({
              products: products
          })
+    }
+
+    //Function to delete the product
+    handleDeleteProduct = (productId) => {
+        const { products } = this.state;
+
+        //Returns an array containing products, whose id is not equals to productId
+        const newProducts = products.filter((product) => {
+            return product.id !== productId;
+        })
+
+        //Set newProducts as the products in state
+        this.setState({
+            products: newProducts
+        })
     }
 
     render() {
@@ -83,7 +102,8 @@ class Cart extends React.Component {
                             key={product.id}
                             // Here we are sending the functions as props to the Child Component
                             onIncreaseQuantity = {this.handleIncreaseQuantity}
-                            onDecreaseQuantity = {this.handleDecreaseQuantity} />
+                            onDecreaseQuantity = {this.handleDecreaseQuantity} 
+                            onDeleteProduct = {this.handleDeleteProduct} />
                     );
                 })}
             </div>
