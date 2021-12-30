@@ -3,7 +3,7 @@ import React from 'react';
 // Class Based Component
 const CartItem = (props) => {
      //Getting the product details from the props
-     const { price, title, qty } = props.product; //Object de-structuring
+     const { price, title, qty, img } = props.product; //Object de-structuring
 
      //Object de-structuring of functions from Props
      const { product, onIncreaseQuantity, onDecreaseQuantity, onDeleteProduct } = props;
@@ -12,7 +12,7 @@ const CartItem = (props) => {
         <div className='cart-item'>
             <div className="left-block">
                 {/* Here we are using styles.image , which is adding inline style to the img element */}
-                <img style={styles.image} alt={title} /> 
+                <img style={styles.image} alt={title} src={img} /> 
             </div>
             <div className="right-block">
                 {/* Directly using Inline CSS */}
