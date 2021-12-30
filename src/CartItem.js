@@ -6,6 +6,8 @@ class CartItem extends React.Component{
         console.log('this.props.product', this.props.product);
         //Getting the product details from the props
         const { price, title, qty } = this.props.product; //Object de-structuring
+
+        //Object de-structuring of functions from Props
         const { product, onIncreaseQuantity, onDecreaseQuantity, onDeleteProduct } = this.props;
         return (
             <div className='cart-item'>
