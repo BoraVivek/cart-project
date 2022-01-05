@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 //Importing DB from the Firebase Configuration
 import { db } from './firebase-config';
 //Importing Collection and getDocs from Firestore of firebase
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 
 //Function based component
@@ -26,21 +26,22 @@ class App extends React.Component {
     const usersCollectionRef = collection(db, "products");
 
     //Now we create a getProducts function, which fetches the Products from the Firebase db
-    const getProducts = async () => {
-      //Get Documents from the Products collection
-      const data = await getDocs(usersCollectionRef);
+    const getProducts = () => {
+      //Here we are using onSnapshot to listen to document changes in firebase, so that if there are any changes in firebase, our component renders the changes without refreshing the page.
+      onSnapshot(usersCollectionRef, (snapshot) => {
+        //This callback function is called when any update takes place in db
+        //Fetch data from the document, and set the ID of the document.
+        const products = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          data['id'] = doc.id;
+          return data;
+        });
 
-      //Fetch data from the document, and set the ID of the document.
-      const products = data.docs.map((doc) => {
-        const data = doc.data();
-        data['id'] = doc.id;
-        return data;
-      });
-
-      //Set the state of products as per the fetched products
-      this.setState({
-        products,
-        loading: false,
+        //Set the state of products as per the fetched products
+        this.setState({
+          products,
+          loading: false,
+        });
       });
     }
 
