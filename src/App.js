@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 //Importing DB from the Firebase Configuration
 import { db } from './firebase-config';
 //Importing Collection and getDocs from Firestore of firebase
-import { collection, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot } from 'firebase/firestore';
 
 
 //Function based component
@@ -132,11 +132,32 @@ class App extends React.Component {
     return cartTotal;
   }
 
+  //Function to add Product in the Firebase
+  addProduct = () => {
+    //Get the User Collection Reference, In collection we pass the db instance of firebase
+    const usersCollectionRef = collection(db, "products");
+
+    //Now we are using the addDoc function of FireStore, to store our new Document. We pass UserCollectionRef to the addDoc function
+    addDoc(usersCollectionRef, {
+      img: '',
+      price: 900,
+      qty: 3, 
+      title: 'Washing Machine'
+    }).then((docRef) => {
+      //On Successful adding of data, we console log the data
+      console.log("Product has been added", docRef);
+    }).catch((err) => {
+      //On failure, we print the error in console.
+      console.log("Error in Adding Product", err);
+    });
+  }
+
   render() {
     const { products, loading } = this.state;
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
+        <button onClick={this.addProduct} style={{padding: 23}}>Add a Product</button> 
         <Cart products={products}
           handleDecreaseQuantity={this.handleDecreaseQuantity}
           handleIncreaseQuantity={this.handleIncreaseQuantity}
