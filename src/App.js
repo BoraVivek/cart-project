@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 //Importing DB from the Firebase Configuration
 import { db } from './firebase-config';
 //Importing Collection and getDocs from Firestore of firebase
-import { addDoc, collection, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
 
 //Function based component
@@ -20,15 +20,15 @@ class App extends React.Component {
     }
   }
 
-  	//Using the React Lifecycle to fetch data before rendering
+  //Using the React Lifecycle to fetch data before rendering
   componentDidMount() {
-    //Get the User Collection Reference, In collection we pass the db instance of firebase
-    const usersCollectionRef = collection(db, "products");
+    //Get the Product Collection Reference, In collection we pass the db instance of firebase
+    const productsCollectionRef = collection(db, "products");
 
     //Now we create a getProducts function, which fetches the Products from the Firebase db
     const getProducts = () => {
       //Here we are using onSnapshot to listen to document changes in firebase, so that if there are any changes in firebase, our component renders the changes without refreshing the page.
-      onSnapshot(usersCollectionRef, (snapshot) => {
+      onSnapshot(productsCollectionRef, (snapshot) => {
         //This callback function is called when any update takes place in db
         //Fetch data from the document, and set the ID of the document.
         const products = snapshot.docs.map((doc) => {
@@ -59,12 +59,16 @@ class App extends React.Component {
     //Now we are finding the index of the product where we have to increase the quantity
     const index = products.indexOf(product);
 
-    // Now we increase the quantity of product at that particular index
-    products[index].qty += 1;
+    //Get the Product Document Reference, In doc we pass the db instance of firebase, name of collection, and id of document to be fetched
+    const productDocRef = doc(db, "products", products[index].id);
 
-    //Now we replace the products array with the updated products
-    this.setState({
-      products: products
+    //We call the updateDoc function of Firestore, and provides the updated data, 
+    updateDoc(productDocRef, {
+      qty: products[index].qty + 1,
+    }).then(() => {
+      console.log('Document updated Successfully');
+    }).catch((err) => {
+      console.log("Document failed to update", err);
     })
   }
 
@@ -83,12 +87,16 @@ class App extends React.Component {
       return;
     }
 
-    // Now we decrease the quantity of product at that particular index
-    products[index].qty -= 1;
+    //Get the Product Document Reference, In doc we pass the db instance of firebase, name of collection, and id of document to be fetched
+    const productDocRef = doc(db, "products", products[index].id);
 
-    //Now we replace the products array with the updated products
-    this.setState({
-      products: products
+    //We call the updateDoc function of Firestore, and provides the updated data, 
+    updateDoc(productDocRef, {
+      qty: products[index].qty - 1,
+    }).then(() => {
+      console.log('Document updated Successfully');
+    }).catch((err) => {
+      console.log("Document failed to update", err);
     })
   }
 
@@ -134,14 +142,14 @@ class App extends React.Component {
 
   //Function to add Product in the Firebase
   addProduct = () => {
-    //Get the User Collection Reference, In collection we pass the db instance of firebase
-    const usersCollectionRef = collection(db, "products");
+    //Get the Product Collection Reference, In collection we pass the db instance of firebase
+    const productsCollectionRef = collection(db, "products");
 
     //Now we are using the addDoc function of FireStore, to store our new Document. We pass UserCollectionRef to the addDoc function
-    addDoc(usersCollectionRef, {
+    addDoc(productsCollectionRef, {
       img: '',
       price: 900,
-      qty: 3, 
+      qty: 3,
       title: 'Washing Machine'
     }).then((docRef) => {
       //On Successful adding of data, we console log the data
@@ -157,13 +165,13 @@ class App extends React.Component {
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
-        <button onClick={this.addProduct} style={{padding: 23}}>Add a Product</button> 
+        <button onClick={this.addProduct} style={{ padding: 23 }}>Add a Product</button>
         <Cart products={products}
           handleDecreaseQuantity={this.handleDecreaseQuantity}
           handleIncreaseQuantity={this.handleIncreaseQuantity}
           handleDeleteProduct={this.handleDeleteProduct} />
 
-          {loading && <h1>Loading Products...</h1>}
+        {loading && <h1>Loading Products...</h1>}
         <div style={{ padding: 10, fontSize: 20 }}>Total: {this.getCartTotal()}</div>
       </div>
     );
