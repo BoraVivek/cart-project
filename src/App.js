@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 //Importing DB from the Firebase Configuration
 import { db } from './firebase-config';
 //Importing Collection and getDocs from Firestore of firebase
-import { addDoc, collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
 
 //Function based component
@@ -102,18 +102,15 @@ class App extends React.Component {
 
   //Function to delete the product
   handleDeleteProduct = (productId) => {
-    const {
-      products
-    } = this.state;
+    
+    //Get the Product Document Reference, In doc we pass the db instance of firebase, name of collection, and id of document to be fetched
+    const productDocRef = doc(db, "products", productId);
 
-    //Returns an array containing products, whose id is not equals to productId
-    const newProducts = products.filter((product) => {
-      return product.id !== productId;
-    })
-
-    //Set newProducts as the products in state
-    this.setState({
-      products: newProducts
+    //Calling the deleteDoc function of Firestore, and passing the productDocRef to it, in order to delete that product
+    deleteDoc(productDocRef).then(() => {
+      console.log("Product deleted successfully");
+    }).catch((err) => {
+      console.log("Failed to delete products");
     })
   }
 
