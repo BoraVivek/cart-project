@@ -2,6 +2,12 @@ import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
 
+//Importing DB from the Firebase Configuration
+import { db } from './firebase-config';
+//Importing Collection and getDocs from Firestore of firebase
+import { collection, getDocs } from 'firebase/firestore';
+
+
 //Function based component
 class App extends React.Component {
 
@@ -9,29 +15,37 @@ class App extends React.Component {
     super();
 
     this.state = {
-      products: [{
-        price: 99,
-        title: "Watch",
-        qty: 1,
-        img: 'https://images.unsplash.com/photo-1544117519-31a4b719223d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=452&q=80',
-        id: 1
-      },
-      {
-        price: 999,
-        title: "Mobile Phone",
-        qty: 10,
-        img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80',
-        id: 2,
-      },
-      {
-        price: 999,
-        title: "Laptop",
-        qty: 4,
-        img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80',
-        id: 3,
-      },
-      ]
+      products: [],
+      loading: true,
     }
+  }
+
+  	//Using the React Lifecycle to fetch data before rendering
+  componentDidMount() {
+    //Get the User Collection Reference, In collection we pass the db instance of firebase
+    const usersCollectionRef = collection(db, "products");
+
+    //Now we create a getProducts function, which fetches the Products from the Firebase db
+    const getProducts = async () => {
+      //Get Documents from the Products collection
+      const data = await getDocs(usersCollectionRef);
+
+      //Fetch data from the document, and set the ID of the document.
+      const products = data.docs.map((doc) => {
+        const data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      });
+
+      //Set the state of products as per the fetched products
+      this.setState({
+        products,
+        loading: false,
+      });
+    }
+
+    //Call the getProducts function
+    getProducts();
   }
 
   //Function to increase the quantity of product
@@ -118,15 +132,17 @@ class App extends React.Component {
   }
 
   render() {
+    const { products, loading } = this.state;
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
-        <Cart products={this.state.products}
+        <Cart products={products}
           handleDecreaseQuantity={this.handleDecreaseQuantity}
           handleIncreaseQuantity={this.handleIncreaseQuantity}
           handleDeleteProduct={this.handleDeleteProduct} />
 
-        <div style={{padding:10, fontSize: 20}}>Total: {this.getCartTotal()}</div>
+          {loading && <h1>Loading Products...</h1>}
+        <div style={{ padding: 10, fontSize: 20 }}>Total: {this.getCartTotal()}</div>
       </div>
     );
   }
